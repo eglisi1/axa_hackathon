@@ -1,0 +1,10 @@
+{
+    "beteiligter": "Sample Name",
+    "fahrzeug": "Sample Vehicle",
+    "aktionen": [
+        {
+            "id": 1,
+            "beschreibung": "Sample Description"
+        }
+    ]
+}
