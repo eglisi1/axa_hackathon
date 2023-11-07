@@ -1,2 +1,8 @@
 logging:
   level: DEBUG
+
+sentence_transformer:
+  model_name: all-MiniLM-L6-v2
+
+vectorization:
+  metric: euclidean
