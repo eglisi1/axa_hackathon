@@ -5,6 +5,10 @@
         {
             "id": 1,
             "beschreibung": "Sample Description"
+        },
+        {
+            "id": 2,
+            "beschreibung": "Sample Description 2"
         }
     ]
 }
