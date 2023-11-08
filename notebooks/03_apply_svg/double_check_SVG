@@ -1,0 +1,86 @@
+import os
+import openai
+import json
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
+
+
+# Now you can use os.getenv to access your variables
+openai.api_key  = os.environ['OPENAI_API_KEY']
+
+input = {
+    "beteiligter": "Beteiligter 1",
+    "fahrzeug": "Ford Fiesta",
+    "aktionen": [
+        {
+            "id": 1,
+            "beschreibung": "Hat einen Bus übersehen, der angezeigt hat, dass er wegfahren will",
+			"artikel": {
+				"VRV 28 1": "Der Fahrzeugführer hat alle Richtungsänderungen anzukündigen, auch das Abbiegen nach rechts. Selbst der Radfahrer, der zum Überholen eines andern ausschwenkt, hat dies anzuzeigen.",
+				"VRV 17 5": "Kündigt der Führer eines Busses im Linienverkehr innerorts bei einer gekennzeichneten Haltestelle mit den Richtungsblinkern an, dass er wegfahren will, so müssen die von hinten herannahenden Fahrzeugführer nötigenfalls die Geschwindigkeit mässigen oder halten,"
+			}
+		},
+        {
+            "id": 2,
+            "beschreibung": "Hat nicht geblinkt",
+			"artikel": {
+				"VRV 28 1": "Der Fahrzeugführer hat alle Richtungsänderungen anzukündigen, auch das Abbiegen nach rechts. Selbst der Radfahrer, der zum Überholen eines andern ausschwenkt, hat dies anzuzeigen.",
+				"VRV 17 5": "Kündigt der Führer eines Busses im Linienverkehr innerorts bei einer gekennzeichneten Haltestelle mit den Richtungsblinkern an, dass er wegfahren will, so müssen die von hinten herannahenden Fahrzeugführer nötigenfalls die Geschwindigkeit mässigen oder halten,"
+			}
+		}
+    ],
+}
+
+output_dict = input
+
+# Für jede Aktion Artikel-Infos und Sachverhalt zusammentragen
+prompt_list = []
+
+
+for aktion in input["aktionen"]:
+    # Artikel-Infos als einzelner String
+    artikel_infos = " ".join([f"{artikel}: {text}" for artikel, text in aktion["artikel"].items()])
+    print("artikel_infos")
+    print(artikel_infos)
+    
+    # Kombiniere Sachverhalt und Artikel-Infos
+    aktion_ergebnis = f"Sachverhalt: {aktion['beschreibung']}\nArtikel-Infos: {artikel_infos}"
+    print("aktion_ergebnis")
+    print(aktion_ergebnis)
+    
+    # Füge das Ergebnis zur Liste hinzu
+    prompt_list.append(aktion_ergebnis)
+
+count = 1 
+
+for i in prompt_list:
+    
+    doublecheck_prompt = PromptTemplate(
+    input_variables=['situation_and_law'],
+    template = """\
+        Du bekommst die folgendenn Text mit einem Sacherhalt und Gesetzesartikeln {situation_and_law} mit der Artikel-Referenz und den Artikeltext. Prüfe welcher der Gesetzesartikel am besten zum Sachverhalt passt und liefere nur den diesen Artikel zurück und gib ein Objekt in folgender Struktur zurück wie folgt, ergänze keine Attribute:
+        "beschreibung": "Text von Sachverhalt", "artikel": Artikel als key:value pair, wobei der key der Artikel ist und der value der Text.
+               
+        Formatiere die Antwort in ein JSON."""
+    )
+    # Step 6: Instantiate the LLMChain
+    llm = ChatOpenAI(temperature=0.0, model_name="gpt-3.5-turbo")
+    chain = LLMChain(llm=llm, prompt=doublecheck_prompt, verbose = True)
+    
+    prompt = doublecheck_prompt.format(situation_and_law=i)
+    output = chain.run({'situation_and_law': i,},)
+    print(output)
+    print("-------------")
+    dict_output = json.loads(output)
+    print("dict_output")
+    print(dict_output)
+    for aktion in output_dict['aktionen']:
+        if aktion['id'] == count :
+            print("+++++++++++++++++++in here+++++++++++++++++++")
+            aktion['artikel'] = dict_output['artikel']
+    count += 1
+    
+print("input")
+print(output_dict)
+
