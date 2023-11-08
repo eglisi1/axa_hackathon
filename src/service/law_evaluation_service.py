@@ -1,10 +1,13 @@
 import json
 import os
 import openai
+
+from util.logger import get_logger
+from typing import Tuple, List
+
 from langchain import PromptTemplate, LLMChain
 from langchain.chat_models import ChatOpenAI
 from langchain.output_parsers import ResponseSchema, StructuredOutputParser
-from util.logger import get_logger
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 if openai.api_key is None:
@@ -16,34 +19,42 @@ class LawEvaluationService:
         self.config = config
         self.logger = get_logger(__name__, config)
 
-    def evaluate_laws(self, input: dict) -> list:
-        action_list = ''
+    def evaluate_laws(self, analyzed_situation_with_law: dict) -> List:
+        action_list, article_dict = self.get_articles(analyzed_situation_with_law)
+        format_instructions = self.get_format_instructions()
+        violation_prompt_template = self.get_prompt_template()
+        evaluated_articles = []
+
+        for article_id, article_text in article_dict.items():
+            evaluated_articles.append(
+                self.enrich_article(
+                    violation_prompt_template,
+                    action_list,
+                    article_text,
+                    article_id,
+                    format_instructions,
+                )
+            )
+
+        self.logger.debug(evaluated_articles)
+
+        return evaluated_articles
+
+    def get_articles(self, analyzed_situation_with_law: dict) -> Tuple:
+        action_list = ""
         article_dict = {}
 
-        for aktion in input['aktionen']:
-            action_list += aktion['beschreibung'] + ', '
+        for aktion in analyzed_situation_with_law["aktionen"]:
+            action_list += aktion["beschreibung"] + ", "
 
-            for article_id, article_text in aktion['artikel'].items():
+            for article_id, article_text in aktion["artikel"].items():
                 if article_id not in article_dict:
                     article_dict[article_id] = article_text
+        return action_list, article_dict
 
-        violation_schema = ResponseSchema(name='violation',
-                                          description='Wurde gegen den Gesetzesartikel verstossen? \
-                                     Antworte True wenn ja, oder antworte False wenn Nein oder es nicht klar ist.')
-
-        reason_schema = ResponseSchema(name='reason',
-                                       description='Begründe warum gegen den Gesetzesartikel \
-                                     verstossen wurde oder warum nicht.')
-
-        response_schemas = [violation_schema,
-                            reason_schema]
-
-        violation_output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
-
-        # format_instructions = violation_output_parser.get_format_instructions()
-
-        violation_prompt_template = PromptTemplate(
-            input_variables=['aktionsliste', 'artikel'],
+    def get_prompt_template(self) -> PromptTemplate:
+        return PromptTemplate(
+            input_variables=["aktionsliste", "artikel", "format_instructions"],
             template="""\
                 Evaluiere anhand der folgenden kommaseparierten Liste von Aktionen ob die Person gegen den folgenden Gesetzesartikel verstösst des folgenden  ob die folgende aktion gegen ihn verstösst und \
                 extrahiere die dazu folgenden Informationen: \
@@ -58,25 +69,61 @@ class LawEvaluationService:
                 Artikel: {artikel}
 
                 Formattiere die Antwort in ein valides JSON.
-            """
+
+                {format_instructions}
+            """,
         )
 
-        evaluated_articles = []
+    def enrich_article(
+        self,
+        violation_prompt_template: PromptTemplate,
+        action_list: str,
+        article_text: str,
+        article_id: str,
+        format_instructions: str,
+    ) -> dict:
+        llm = ChatOpenAI(
+            temperature=self.config["situation_analysis"]["temperature"],
+            model_name=self.config["situation_analysis"]["model_name"],
+        )
 
-        for article_id, article_text in article_dict.items():
-            prompt = violation_prompt_template.format(aktionsliste=action_list, artikel=article_text)
+        chain = LLMChain(
+            llm=llm,
+            prompt=violation_prompt_template,
+            verbose=self.config["situation_analysis"]["verbose"],
+        )
 
-            llm = ChatOpenAI(temperature=0.0, model_name="gpt-3.5-turbo")
-            chain = LLMChain(llm=llm, prompt=violation_prompt_template, verbose=True)
+        output = chain.run(
+            {
+                "aktionsliste": action_list,
+                "artikel": article_text,
+                "format_instructions": format_instructions,
+            }
+        )
 
-            output = chain.run({'aktionsliste': action_list, 'artikel': article_text}, )
+        self.logger.debug(f"output: {output}")
+        cleaned_output = output.replace("```json", "").replace("```", "")
+        self.logger.debug(f"cleaned_output: {cleaned_output}")
+        output_dict = json.loads(cleaned_output)
+        output_dict["Article_ID"] = article_id
+        output_dict["Article_Text"] = article_text
+        return output_dict
 
-            output_dict = json.loads(output)
-            output_dict['Article_ID'] = article_id
-            output_dict['Article_Text'] = article_text
+    def get_format_instructions(self) -> str:
+        self.logger.debug("get_format_instructions")
+        violation_schema = ResponseSchema(
+            name="violation",
+            description="Wurde gegen den Gesetzesartikel verstossen? Antworte True wenn ja, oder antworte False wenn Nein oder es nicht klar ist.",
+        )
 
-            evaluated_articles.append(output_dict)
+        reason_schema = ResponseSchema(
+            name="reason",
+            description="Begründe warum gegen den Gesetzesartikel verstossen wurde oder warum nicht.",
+        )
 
-        self.logger.debug(evaluated_articles)
+        response_schemas = [violation_schema, reason_schema]
 
-        return evaluated_articles
+        violation_output_parser = StructuredOutputParser.from_response_schemas(
+            response_schemas
+        )
+        return violation_output_parser.get_format_instructions()

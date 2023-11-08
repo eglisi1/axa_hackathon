@@ -5,9 +5,9 @@ from util.logger import get_logger
 from util.config import load_config
 from model.request import Request
 from model.response import Response
+from typing import List
 
 from service.analysis_service import AnalysisService
-from service.compliance_service import ComplianceService
 from service.legal_search_service import LegalSearchService
 from service.law_evaluation_service import LawEvaluationService
 
@@ -29,22 +29,25 @@ def read_config() -> dict:
 
 
 @app.put("/predict")
-def predict(request: Request) -> Response:
+def predict(request: Request) -> List:
+    # todo return Response
     try:
         logger.info(f"Received request: {request}")
         analyzed_situation = analysis_service.analyze_incident(request.situation)
         logger.info(f'analyzed situation: {analyzed_situation}')
         situation_with_law = legal_search_service.search_relevant_articles(analyzed_situation)
         logger.info(f'situation with law: {situation_with_law}')
-        # Legal Search Service (legal_search_service.py)
-
-        # TODO: enable if input dict is ready!
-        # article_evaluations = compliance_service.evaluate_laws(input)
-
-        # Liability Determination Service (liability_service.py)
-
-        # TODO: add article_evaluations when input is ready
-        return Response(artile_evaluations=[])
+        involved_parties = []
+        for situation in situation_with_law:
+            article_evaluations = compliance_service.evaluate_laws(situation)
+            logger.info(f'article evaluations: {article_evaluations}')
+            involved_parties.append({
+                "name": situation["beteiligter"],
+                "vehicle": situation["fahrzeug"],
+                "article_evaluations": article_evaluations
+            })
+        logger.info(f'involved parties: {involved_parties}')
+        return involved_parties
     except Exception as e:
         logger.error(f"Error during prediction: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")

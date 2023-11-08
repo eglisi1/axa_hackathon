@@ -2,8 +2,9 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.model.article_evaluation import ArticleEvaluation
+from model.involved_party import InvolvedParty
+
 
 
 class Response(BaseModel):
-    artile_evaluations: List[ArticleEvaluation]
+    involved_parties: List[InvolvedParty]
