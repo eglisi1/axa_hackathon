@@ -3,10 +3,11 @@ import os
 import openai
 
 from util.logger import get_logger
+from util.lang_chain_util import create_llm, create_llm_chain
+
 from typing import Tuple, List
 
-from langchain import PromptTemplate, LLMChain
-from langchain.chat_models import ChatOpenAI
+from langchain import PromptTemplate
 from langchain.output_parsers import ResponseSchema, StructuredOutputParser
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -35,9 +36,7 @@ class LawEvaluationService:
                     format_instructions,
                 )
             )
-
         self.logger.debug(evaluated_articles)
-
         return evaluated_articles
 
     def get_articles(self, analyzed_situation_with_law: dict) -> Tuple:
@@ -74,17 +73,7 @@ class LawEvaluationService:
         article_id: str,
         format_instructions: str,
     ) -> dict:
-        llm = ChatOpenAI(
-            temperature=self.config["situation_analysis"]["temperature"],
-            model_name=self.config["situation_analysis"]["model_name"],
-        )
-
-        chain = LLMChain(
-            llm=llm,
-            prompt=violation_prompt_template,
-            verbose=self.config["situation_analysis"]["verbose"],
-        )
-
+        chain = create_llm_chain(create_llm(), violation_prompt_template)
         output = chain.run(
             {
                 "aktionsliste": action_list,
@@ -92,11 +81,14 @@ class LawEvaluationService:
                 "format_instructions": format_instructions,
             }
         )
+        return self.create_article_return(
+            output.replace("```json", "").replace("```", ""), article_id, article_text
+        )
 
-        self.logger.debug(f"output: {output}")
-        cleaned_output = output.replace("```json", "").replace("```", "")
-        self.logger.debug(f"cleaned_output: {cleaned_output}")
-        output_dict = json.loads(cleaned_output)
+    def create_article_return(
+        self, output: str, article_id: str, article_text: str
+    ) -> dict:
+        output_dict = json.loads(output)
         output_dict["Article_ID"] = article_id
         output_dict["Article_Text"] = article_text
         return output_dict
