@@ -43,7 +43,4 @@ class AnalysisService:
             )
             raise ValueError("Output does not contain expected separator '|'")
 
-        splitted_list = output.split("|")
-        dict_list = [json.loads(s) for s in splitted_list]
-
-        return dict_list
+        return [json.loads(s) for s in output.split("|")]

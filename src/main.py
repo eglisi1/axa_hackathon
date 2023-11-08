@@ -8,7 +8,6 @@ from model.response import Response
 from typing import List
 
 from service.analysis_service import AnalysisService
-from service.compliance_service import ComplianceService
 from service.legal_search_service import LegalSearchService
 from service.law_evaluation_service import LawEvaluationService
 
