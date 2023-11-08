@@ -1,14 +1,16 @@
 logging:
   level: DEBUG
 
+interface: OpenAI #openai, huggingface
+
 sentence_transformer:
-  model_name: all-MiniLM-L6-v2
+  model_name: all-MiniLM-L6-v2 # huggingface: all-MiniLM-L6-v2, openai: text-embedding-ada-002
 
 vectorization:
   environment: eu-west4-gcp
   metric: euclidean
 
 situation_analysis:
-  model_name: gpt-3.5-turbo
+  model_name: gpt-3.5-turbo # huggingface: , openai: gpt-3.5-turbo
   temperature: 0.0
   verbose: False
