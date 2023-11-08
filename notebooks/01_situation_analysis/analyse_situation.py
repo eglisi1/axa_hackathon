@@ -24,14 +24,14 @@ prompt = PromptTemplate(
 )
  
 # Step 5: Print the Prompt Template
-print(prompt.format(concept=situation1))
+print(prompt.format(concept=situation2))
  
 # Step 6: Instantiate the LLMChain
 llm = OpenAI(temperature=0.0, model_name="gpt-3.5-turbo")
 chain = LLMChain(llm=llm, prompt=prompt, verbose = True)
  
 # Step 7: Run the LLMChain
-output = chain.run(situation1)
+output = chain.run(situation2)
 print(output)
 
 if '|' in output:
