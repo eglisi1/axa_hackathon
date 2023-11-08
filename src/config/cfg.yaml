@@ -7,3 +7,6 @@ sentence_transformer:
 vectorization:
   environment: eu-west4-gcp
   metric: euclidean
+
+sentence_transformer:
+  model_name: all-MiniLM-L6-v2
