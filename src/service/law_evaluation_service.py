@@ -56,21 +56,13 @@ class LawEvaluationService:
         return PromptTemplate(
             input_variables=["aktionsliste", "artikel", "format_instructions"],
             template="""\
-                Evaluiere anhand der folgenden kommaseparierten Liste von Aktionen ob die Person gegen den folgenden Gesetzesartikel verstösst des folgenden  ob die folgende aktion gegen ihn verstösst und \
-                extrahiere die dazu folgenden Informationen: \
-
-                Violation: Wurde gegen den Gesetzesartikel verstossen? Antworte True \
-                wenn ja, oder antworte False wenn Nein oder es nicht klar ist.gegen den folgenden Gesetzesartikel '{artikel}' verstösst.",
-
-                Reason: Begründe warum gegen den Gesetzesartikel verstossen wurde oder warum nicht.
-
-                Aktionsliste: {aktionsliste}
-
-                Artikel: {artikel}
-
-                Formattiere die Antwort in ein valides JSON.
-
+                Evaluiere anhand der folgenden kommaseparierten Liste der folgenden Aktionen: {aktionsliste} ob die 
+                Person gegen den folgenden Gesetzesartikel {artikel} verstösst des folgenden ob die folgende Aktion gegen ihn verstösst und 
+                extrahiere die dazu folgenden Informationen aus den Format Instructions.
+    
                 {format_instructions}
+    
+                Formattiere die Antwort in ein valides JSON.
             """,
         )
 
