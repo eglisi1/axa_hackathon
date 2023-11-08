@@ -31,11 +31,13 @@ def predict(request: Request) -> Response:
         logger.info(f"Received request: {request}")
         analyzed_situation = analysis_service.analyze_incident(request.situation)
         logger.info(f'analyzed situation: {analyzed_situation}')
-        return Response(text=request.situation)
-        # Analysis Service (analysis_service.py)
+        
         # Legal Search Service (legal_search_service.py)
         # Compliance Check Service (compliance_service.py)
+        # TODO: NICK
         # Liability Determination Service (liability_service.py)
+
+        return Response(text=request.situation)
     except Exception as e:
         logger.error(f"Error during prediction: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
