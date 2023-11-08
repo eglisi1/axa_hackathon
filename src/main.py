@@ -7,6 +7,7 @@ from model.request import Request
 from model.response import Response
 
 from service.analysis_service import AnalysisService
+from service.compliance_service import ComplianceService
 
 app = FastAPI()
 
@@ -15,7 +16,9 @@ config = load_config("config/cfg.yaml")
 logger = get_logger(__name__, config)
 
 # services
-anaysis_service = AnalysisService(config)
+analysis_service = AnalysisService(config)
+compliance_service = ComplianceService(config)
+
 
 @app.get("/config")
 def read_config() -> dict:
@@ -26,7 +29,7 @@ def read_config() -> dict:
 def predict(request: Request) -> Response:
     try:
         logger.info(f"Received request: {request}")
-        analyzed_situation = anaysis_service.analyze_incident(request.situation)
+        analyzed_situation = analysis_service.analyze_incident(request.situation)
         logger.info(f'analyzed situation: {analyzed_situation}')
         return Response(text=request.situation)
         # Analysis Service (analysis_service.py)
