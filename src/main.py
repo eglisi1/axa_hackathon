@@ -21,6 +21,10 @@ def predict(request: Request) -> Response:
     try:
         logger.info(f"Received request: {request}")
         return Response(text=request.text)
+        # Analysis Service (analysis_service.py)
+        # Legal Search Service (legal_search_service.py)
+        # Compliance Check Service (compliance_service.py)
+        # Liability Determination Service (liability_service.py)
     except Exception as e:
         logger.error(f"Error during prediction: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
