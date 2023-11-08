@@ -10,6 +10,7 @@ from typing import List
 from service.analysis_service import AnalysisService
 from service.legal_search_service import LegalSearchService
 from service.law_evaluation_service import LawEvaluationService
+from service.double_check_service import DoubleCheckService
 
 app = FastAPI()
 
@@ -20,6 +21,7 @@ logger = get_logger(__name__, config)
 # services
 analysis_service = AnalysisService(config)
 legal_search_service = LegalSearchService(config)
+double_check_service = DoubleCheckService(config)
 compliance_service = LawEvaluationService(config)
 
 
@@ -37,8 +39,10 @@ def predict(request: Request) -> List:
         logger.info(f'analyzed situation: {analyzed_situation}')
         situation_with_law = legal_search_service.search_relevant_articles(analyzed_situation)
         logger.info(f'situation with law: {situation_with_law}')
+        situation_with_law_and_double_checked = double_check_service.double_check(situation_with_law)
+        logger.info(f'situation with law and double checked: {situation_with_law_and_double_checked}')
         involved_parties = []
-        for situation in situation_with_law:
+        for situation in situation_with_law_and_double_checked:
             article_evaluations = compliance_service.evaluate_laws(situation)
             logger.info(f'article evaluations: {article_evaluations}')
             involved_parties.append({
