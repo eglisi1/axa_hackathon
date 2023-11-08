@@ -33,5 +33,5 @@ async def custom_404_handler(request: Request, exc):
         status_code=404,
         content={
             "message": f"Oops! The endpoint '{request.url.path}' does not exist. Please read the docs '/docs'."
-        },
+        }
     )
