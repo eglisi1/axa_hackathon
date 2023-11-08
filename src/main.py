@@ -7,6 +7,8 @@ from model.request import Request
 from model.response import Response
 
 from service.analysis_service import AnalysisService
+from service.compliance_service import ComplianceService
+from service.legal_search_service import LegalSearchService
 from service.law_evaluation_service import LawEvaluationService
 
 app = FastAPI()
@@ -17,6 +19,7 @@ logger = get_logger(__name__, config)
 
 # services
 analysis_service = AnalysisService(config)
+legal_search_service = LegalSearchService(config)
 compliance_service = LawEvaluationService(config)
 
 
@@ -31,7 +34,8 @@ def predict(request: Request) -> Response:
         logger.info(f"Received request: {request}")
         analyzed_situation = analysis_service.analyze_incident(request.situation)
         logger.info(f'analyzed situation: {analyzed_situation}')
-        
+        situation_with_law = legal_search_service.search_relevant_articles(analyzed_situation)
+        logger.info(f'situation with law: {situation_with_law}')
         # Legal Search Service (legal_search_service.py)
 
         # TODO: enable if input dict is ready!

@@ -1,9 +1,12 @@
 import os
 import openai
 import json
+from typing import List, Dict
+
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
+
 from util.logger import get_logger
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -21,7 +24,7 @@ class AnalysisService:
             element 1 = "beteiligter": "Sample Name",element 2 "fahrzeug": "Vehicle", element 3"aktionen": as a list that contains max. 4 objects "id": 1, "beschreibung": "Sample Description,v max. 10 words per aktion""",
         )
 
-    def analyze_incident(self, situation_text: str) -> dict:
+    def analyze_incident(self, situation_text: str) -> List[Dict]:
         self.logger.debug(f"Create OpenAI model with config: {self.config['situation_analysis']}")
         llm = ChatOpenAI(
             temperature=self.config["situation_analysis"]["temperature"],
@@ -44,4 +47,4 @@ class AnalysisService:
         splitted_list = output.split("|")
         dict_list = [json.loads(s) for s in splitted_list]
 
-        return {"result": dict_list}
+        return dict_list
