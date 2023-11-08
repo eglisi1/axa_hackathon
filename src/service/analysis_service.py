@@ -38,7 +38,6 @@ class AnalysisService:
         output = chain.run(situation_text)
         self.logger.debug(f'Chain output: {output}')
         if "|" not in output:
-            # todo retry?
             self.logger.error(
                 f"Chain output does not contain expected separator '|': {output}"
             )
