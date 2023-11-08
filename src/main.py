@@ -7,7 +7,7 @@ from model.request import Request
 from model.response import Response
 
 from service.analysis_service import AnalysisService
-from service.compliance_service import ComplianceService
+from service.law_evaluation_service import LawEvaluationService
 
 app = FastAPI()
 
@@ -17,7 +17,7 @@ logger = get_logger(__name__, config)
 
 # services
 analysis_service = AnalysisService(config)
-compliance_service = ComplianceService(config)
+compliance_service = LawEvaluationService(config)
 
 
 @app.get("/config")
@@ -33,11 +33,14 @@ def predict(request: Request) -> Response:
         logger.info(f'analyzed situation: {analyzed_situation}')
         
         # Legal Search Service (legal_search_service.py)
-        # Compliance Check Service (compliance_service.py)
-        # TODO: NICK
+
+        # TODO: enable if input dict is ready!
+        # article_evaluations = compliance_service.evaluate_laws(input)
+
         # Liability Determination Service (liability_service.py)
 
-        return Response(text=request.situation)
+        # TODO: add article_evaluations when input is ready
+        return Response(artile_evaluations=[])
     except Exception as e:
         logger.error(f"Error during prediction: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")

@@ -16,16 +16,20 @@ input = {
         {
             "id": 1,
             "beschreibung": "Hat rechts abgebogen",
-            "artikel_id": "VRV 28 1",
-            "artikel_text": "Der Fahrzeugführer hat alle Richtungsänderungen anzukündigen, auch das Abbiegen nach rechts. Selbst der Radfahrer, der zum Überholen eines andern ausschwenkt, hat dies anzuzeigen."
+            "artikel": {
+                "VRV 28 1": "Der Fahrzeugführer hat alle Richtungsänderungen anzukündigen, auch das Abbiegen nach rechts. Selbst der Radfahrer, der zum Überholen eines andern ausschwenkt, hat dies anzuzeigen.",
+                "VRV 17 5": "Kündigt der Führer eines Busses im Linienverkehr innerorts bei einer gekennzeichneten Haltestelle mit den Richtungsblinkern an, dass er wegfahren will, so müssen die von hinten herannahenden Fahrzeugführer nötigenfalls die Geschwindigkeit mässigen oder halten,"
+            }
         },
         {
             "id": 2,
             "beschreibung": "Hat nicht geblinkt",
-            "artikel_id": "VRV 17 5",
-            "artikel_text": "Kündigt der Führer eines Busses im Linienverkehr innerorts bei einer gekennzeichneten Haltestelle mit den Richtungsblinkern an, dass er wegfahren will, so müssen die von hinten herannahenden Fahrzeugführer nötigenfalls die Geschwindigkeit mässigen oder halten, um ihm die Wegfahrt zu ermöglichen; dies gilt nicht, wenn sich die Haltestelle am linken Fahrbahnrand befindet. Der Busführer darf die Richtungsblinker erst betätigen, wenn er zur Wegfahrt bereit ist; er muss warten, wenn von hinten herannahende Fahrzeuge nicht rechtzeitig halten können."
+            "artikel": {
+                "VRV 28 1": "Der Fahrzeugführer hat alle Richtungsänderungen anzukündigen, auch das Abbiegen nach rechts. Selbst der Radfahrer, der zum Überholen eines andern ausschwenkt, hat dies anzuzeigen.",
+                "VRV 17 5": "Kündigt der Führer eines Busses im Linienverkehr innerorts bei einer gekennzeichneten Haltestelle mit den Richtungsblinkern an, dass er wegfahren will, so müssen die von hinten herannahenden Fahrzeugführer nötigenfalls die Geschwindigkeit mässigen oder halten,"
+            }
         }
-    ]
+    ],
 }
 
 action_list = ''
