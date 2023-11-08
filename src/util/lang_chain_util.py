@@ -25,7 +25,7 @@ def create_llm() -> ChatOpenAI:
 
 
 def create_llm_chain(llm, prompt) -> LLMChain:
-    return LLMChain(llm, prompt=prompt, verbose=config["situation_analysis"]["verbose"])
+    return LLMChain(llm=llm, prompt=prompt, verbose=config["situation_analysis"]["verbose"])
 
 
 def create_embedding() -> Embeddings:

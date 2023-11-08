@@ -92,14 +92,14 @@ class LegalSearchService:
         return key
 
     def get_original_text(self, df: pd.DataFrame) -> str:
-        gesetz = filtered_df["Gesetz"].iloc[0]
-        artikel = filtered_df["Artikel"].iloc[0]
-        absatz = filtered_df["Absatz"].iloc[0]
-        filtered_df = self.df_original[
+        gesetz = df["Gesetz"].iloc[0]
+        artikel = df["Artikel"].iloc[0]
+        absatz = df["Absatz"].iloc[0]
+        df = self.df_original[
             (self.df_original["Gesetz"] == gesetz)
             & (self.df_original["Artikel"] == artikel)
             & (self.df_original["Absatz"] == absatz)
         ]
-        original_text = filtered_df["Text"].iloc[0]
+        original_text = df["Text"].iloc[0]
         self.logger.debug(f"Original text: {original_text}")
         return original_text

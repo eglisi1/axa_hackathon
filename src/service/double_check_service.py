@@ -18,6 +18,7 @@ class DoubleCheckService:
         self.config = config
         self.logger = get_logger(__name__, config)
 
+    # TODO: add logging
     def double_check(self, analyzed_situation_with_law: List[Dict]) -> List[Dict]:
         prompt_list = []
         analyzed_situation_with_law_and_double_checked = []

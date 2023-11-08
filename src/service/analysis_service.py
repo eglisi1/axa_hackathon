@@ -29,7 +29,7 @@ class AnalysisService:
         self.logger.debug(f"Create OpenAI model with config: {self.config['situation_analysis']}")
         self.logger.debug(f'Set concept to {situation_text}')
         self.prompt_template.format(concept=situation_text)
-        chain = create_llm_chain(llm=create_llm, prompt=self.prompt_template)
+        chain = create_llm_chain(llm=create_llm(), prompt=self.prompt_template)
         self.logger.debug(f'Run chain with situation: {situation_text}')
         output = chain.run(situation_text)
         self.logger.debug(f'Chain output: {output}')
