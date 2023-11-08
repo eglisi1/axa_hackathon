@@ -5,4 +5,5 @@ sentence_transformer:
   model_name: all-MiniLM-L6-v2
 
 vectorization:
+  environment: eu-west4-gcp
   metric: euclidean
