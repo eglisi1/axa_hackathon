@@ -11,8 +11,11 @@ from langchain.prompts import PromptTemplate
 openai.api_key  = os.environ['OPENAI_API_KEY']
  
 # Text-Input
-situation = "G1, G2 und B1 fuhren in genannter Reihenfolge mit ca. 50 km/h vom Beschleunigungsstreifen Bolligen herkommend auf dem Normalstreifen der A6-Süd R. B2 fuhr kurz vor dem Unfall vom Beschleunigungsstreifen Wankdorf herkommend mit ca. 50 km/h auf die A6-Süd R. G1 und G2 mussten, weil sie an ein Stauende heranfuhren, bis zum Stillstnand abbremsen. B1 bemerkte aufgrund fehlender Aufmerksamkeit das Stauende nicht und konnte in der Folge nicht rechtzeitig Abbremsen. Er kollidierte gegen das heck von G2 und schob G2 gegen das Heck von G1. B2 nahm den Unfall zu spät war und kollidierte gegen das Heck von B1. Im Nachgang wurde festgestellt, dass B2 über keinen gültigen Führerausweis verfügt und unter Drogeneinfluss stand."
- 
+situation1 = "G1, G2 und B1 fuhren in genannter Reihenfolge mit ca. 50 km/h vom Beschleunigungsstreifen Bolligen herkommend auf dem Normalstreifen der A6-Süd R. B2 fuhr kurz vor dem Unfall vom Beschleunigungsstreifen Wankdorf herkommend mit ca. 50 km/h auf die A6-Süd R. G1 und G2 mussten, weil sie an ein Stauende heranfuhren, bis zum Stillstnand abbremsen. B1 bemerkte aufgrund fehlender Aufmerksamkeit das Stauende nicht und konnte in der Folge nicht rechtzeitig Abbremsen. Er kollidierte gegen das heck von G2 und schob G2 gegen das Heck von G1. B2 nahm den Unfall zu spät war und kollidierte gegen das Heck von B1. Im Nachgang wurde festgestellt, dass B2 über keinen gültigen Führerausweis verfügt und unter Drogeneinfluss stand."
+situation2 = "G kam über die Obere Zollgasse her gefahren, weiter in Richtung Ostermundigen. Auf Höhe der Verzweigung Waldheimstrasse kam gleichzeitig B über die Waldheimstrasse her gefahren und wollte nach rechts in die Obere Zollgasse einbiegen. B missachtete dabei den Vortritt und kollidierte so mit seiner linken Fahrzeugfront mit der rechten Fahrzeugseite von G. "
+situation3 = "G1 kam von Hinterkappelen und wollte über die Neue Murtenstrasse in Richtung Bern fahren. B1 fuhr bei der Ausfahrt Bern-Bethlehem ab und wollte über die Neue Murtenstrasse in Richtung Bethlehem/Brünnen fahren. Bei der Kreuzung Eymattstrasse/Neue Murtenstrasse missachtete B1 das rote Lichtsignal und nahm damit G1 den Vortritt. In der Folge kollidierte G1 frontal mit der rechnten Seite des Fahrzeuges von B1."
+situation4 = "B fuhr in Frauenkappelen von Mühleberg herkommend in Richtung Bern auf der Murtenstrasse. B fuhr mit ca. 45 km/h (eigene Angaben) B versuchte während der Fahrt Mücken abzuwehren und wendete dadurch die Aufmerksamkeit gegenüber der Strasse ab. Anschliessend kollidierte B mit der rechten Ecke der Front ihres Pw's gegen den korrekt auf der Fahrbahn parkierten Anhänger des Drittgeschädigten. Duch den Unfall wurden die Airbags des Pw B ausgelöst."
+
 # Step 4: Define the Prompt Template
 prompt = PromptTemplate(
     input_variables=["concept"],
@@ -21,14 +24,14 @@ prompt = PromptTemplate(
 )
  
 # Step 5: Print the Prompt Template
-print(prompt.format(concept=situation))
+print(prompt.format(concept=situation1))
  
 # Step 6: Instantiate the LLMChain
 llm = OpenAI(temperature=0.0, model_name="gpt-3.5-turbo")
 chain = LLMChain(llm=llm, prompt=prompt, verbose = True)
  
 # Step 7: Run the LLMChain
-output = chain.run(situation)
+output = chain.run(situation1)
 print(output)
 
 if '|' in output:
