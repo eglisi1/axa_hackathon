@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse
 
 from util.logger import get_logger
 from util.config import load_config
@@ -25,6 +25,13 @@ def predict(request: Request) -> Request:
         logger.error(f"Error during prediction: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+
 @app.exception_handler(404)
-async def custom_404_handler(_, __):
-    return RedirectResponse("/docs")
+async def custom_404_handler(request: Request, exc):
+    logger.error(f"404 error encountered: {request.url.path}")
+    return JSONResponse(
+        status_code=404,
+        content={
+            "message": f"Oops! The endpoint '{request.url.path}' does not exist. Please read the docs '/docs'."
+        },
+    )
