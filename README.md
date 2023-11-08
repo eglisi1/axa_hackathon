@@ -22,6 +22,20 @@ Sascha...
 
 Sascha...
 
+## 🏠 Architecture
+
+```mermaid
+flowchart TD
+    A[Schadenmeldung / Schilderungen der Beteiligten / Zeugenberichte] -->|An Endpoint senden| B(Sachverhalt analysieren)
+    B --> C[Relevante Gesetzartikel suchen]
+    C --> D[Prüfen ob gegen Gesetzartikel verstossen wurde]
+    D --> E{SLK relevant}
+    E -->|Ja| F[Verhalten gegen Empfelung prüfen]
+    F --> G[Haftungsquote mit Begrüdung]
+    E -->|Nein| H[fa:fa-pen To be implemented]
+```
+
+
 ## 📖 Documentation
 
 Please, our code is self-documenting. Just read it.
