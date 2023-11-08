@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from util.logger import get_logger
 from util.config import load_config
-from model.request import Request
+from model.request import Request, Response
 
 app = FastAPI()
 
@@ -17,10 +17,10 @@ def read_config() -> dict:
 
 
 @app.put("/predict")
-def predict(request: Request) -> Request:
+def predict(request: Request) -> Response:
     try:
         logger.info(f"Received request: {request}")
-        return Request(text=request.text)
+        return Response(text=request.text)
     except Exception as e:
         logger.error(f"Error during prediction: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
