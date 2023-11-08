@@ -33,11 +33,14 @@ def predict(request: Request) -> Response:
         logger.info(f'analyzed situation: {analyzed_situation}')
         
         # Legal Search Service (legal_search_service.py)
-        # Compliance Check Service (law_evaluation_service.py)
-        # TODO: NICK
+
+        # TODO: enable if input dict is ready!
+        # article_evaluations = compliance_service.evaluate_laws(input)
+
         # Liability Determination Service (liability_service.py)
 
-        return Response(text=request.situation)
+        # TODO: add article_evaluations when input is ready
+        return Response(artile_evaluations=[])
     except Exception as e:
         logger.error(f"Error during prediction: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")

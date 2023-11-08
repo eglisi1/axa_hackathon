@@ -16,7 +16,7 @@ class LawEvaluationService:
         self.config = config
         self.logger = get_logger(__name__, config)
 
-    def evaluate_law(self, input: dict) -> list:
+    def evaluate_laws(self, input: dict) -> list:
         action_list = ''
         article_dict = {}
 
