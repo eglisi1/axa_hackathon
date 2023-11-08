@@ -7,3 +7,11 @@ sentence_transformer:
 vectorization:
   environment: eu-west4-gcp
   metric: euclidean
+
+sentence_transformer:
+  model_name: all-MiniLM-L6-v2
+
+situation_analysis:
+  model_name: gpt-3.5-turbo
+  temperature: 0.0
+  verbose: False
