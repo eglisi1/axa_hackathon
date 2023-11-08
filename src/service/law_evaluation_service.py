@@ -73,6 +73,7 @@ class LawEvaluationService:
 
             output_dict = json.loads(output)
             output_dict['Article_ID'] = article_id
+            output_dict['Article_Text'] = article_text
 
             evaluated_articles.append(output_dict)
 
