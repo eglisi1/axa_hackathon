@@ -36,12 +36,10 @@ def predict(request: Request) -> Response:
         logger.info(f'analyzed situation: {analyzed_situation}')
         situation_with_law = legal_search_service.search_relevant_articles(analyzed_situation)
         logger.info(f'situation with law: {situation_with_law}')
-        # Legal Search Service (legal_search_service.py)
+
 
         # TODO: enable if input dict is ready!
         # article_evaluations = compliance_service.evaluate_laws(input)
-
-        # Liability Determination Service (liability_service.py)
 
         # TODO: add article_evaluations when input is ready
         return Response(artile_evaluations=[])
