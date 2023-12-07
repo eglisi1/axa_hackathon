@@ -16,11 +16,11 @@ Or don't, we don't care.
 
 ## 🤔 What is this?
 
-Sascha...
+It is what it is!
 
 ## 🚀 What can this help with?
 
-Sascha...
+It can help
 
 ## 🏠 Architecture
 
