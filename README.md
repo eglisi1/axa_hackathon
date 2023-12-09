@@ -16,11 +16,20 @@ Or don't, we don't care.
 
 ## 🤔 What is this?
 
-It is what it is!
+A state-of-the-art language model-based solution designed for insurance companies
+It focuses on automating responses to emails, providing guidance on handling insurance claims, and aiding in liability assessment using Large Language Models (LLMs).
+Developed in collaboration between ZHAW and AXA, it represents a pioneering approach in the intersection of AI and insurance.
 
 ## 🚀 What can this help with?
 
-It can help
+DalAiLlama assists insurance claim handlers in various tasks:
+* analyzing case facts
+* researching legal articles
+* consulting legal literature and court decisions
+* and making liability assessments
+
+It streamlines these processes through its integration of LLMs, offering a more efficient, accurate, and user-friendly approach to handling complex insurance cases.
+This tool is particularly beneficial for insurance professionals, significantly reducing the time and effort required to navigate the often complex and nuanced realm of insurance claims and liability determinations.
 
 ## 🏠 Architecture
 
@@ -32,6 +41,7 @@ flowchart TD
     D --> E{SLK relevant}
     E -->|Ja| F[Verhalten gegen Empfelung prüfen]
     F --> G[Haftungsquote mit Begrüdung]
+    G --> I[Antwort über FastAPI Endpoint senden]
     E -->|Nein| H[fa:fa-pen To be implemented]
 ```
 
